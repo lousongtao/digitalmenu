@@ -1042,7 +1042,7 @@ public class JDatePanel extends JComponent implements DatePanel {
             if (lookup == null) {
                 lookup = new int[8];
                 lookup[(firstDayOfWeek - 1) % 7] = 0;
-                lookup[(firstDayOfWeek + 0) % 7] = 1;
+                lookup[(firstDayOfWeek) % 7] = 1;
                 lookup[(firstDayOfWeek + 1) % 7] = 2;
                 lookup[(firstDayOfWeek + 2) % 7] = 3;
                 lookup[(firstDayOfWeek + 3) % 7] = 4;

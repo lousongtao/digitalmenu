@@ -382,7 +382,7 @@ public class CheckoutDialog extends JDialog implements ActionListener, DocumentL
 			dlg.setVisible(true);
 			member = dlg.getChoosedMember();
 			showMemberInfo(member);
-		} else if (matchMember.size() == 0){
+		} else {
 			ArrayList<Member> ms = doLookforMemberHazilyServer(tfMember.getText());
 			if (ms != null && !ms.isEmpty()){
 				member = ms.get(0);

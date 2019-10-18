@@ -338,13 +338,13 @@ public class MenuMgmtPanel extends JPanel implements TreeSelectionListener, Acti
 		} else if (e.getSource() == menuitemAddC2){
 			MenuTreeNode node = (MenuTreeNode) menuTree.getLastSelectedPathComponent();
 			Category2Panel p = new Category2Panel(this, (Category1)node.getUserObject());
-			CommonDialog dlg = new CommonDialog(mainFrame, p, Messages.getString("MenuMgmtPanel.AddCategory2"), 400, 500);
+			CommonDialog dlg = new CommonDialog(mainFrame, p, Messages.getString("MenuMgmtPanel.AddCategory2"), 600, 500);
 			dlg.setVisible(true);
 		} else if (e.getSource() == menuitemModifyC2){
 			Category2Panel p = new Category2Panel(this);
 			MenuTreeNode node = (MenuTreeNode) menuTree.getLastSelectedPathComponent();
 			p.setObjectValue((Category2)node.getUserObject());
-			CommonDialog dlg = new CommonDialog(mainFrame, p, Messages.getString("MenuMgmtPanel.ModifyCategory2"), 400, 500);
+			CommonDialog dlg = new CommonDialog(mainFrame, p, Messages.getString("MenuMgmtPanel.ModifyCategory2"), 600, 500);
 			dlg.setVisible(true);
 		} else if (e.getSource() == menuitemAddDish){
 			MenuTreeNode node = (MenuTreeNode) menuTree.getLastSelectedPathComponent();
@@ -1194,7 +1194,6 @@ public class MenuMgmtPanel extends JPanel implements TreeSelectionListener, Acti
 	/**
 	 * 一个DishConfigGroup可以被多个Dish使用, 所以定位ConfigGroup时, 需要把该树上的所有跟这个ConfigGroup相关的节点全部找出来
 	 * @param root
-	 * @param group
 	 * @return
 	 */
 	private ArrayList<TreePath> findPathList(MenuTreeNode root, Object o){

@@ -100,6 +100,7 @@ public class ConstantValue {
 	public static final String CONFIGS_CLEARTABLECODE = "CLEARTABLECODE";
 	public static final String CONFIGS_CONFIRMCODE = "CONFIRMCODE";
 	public static final String CONFIGS_OPENCASHDRAWERCODE = "OPENCASHDRAWERCODE";
+	public static final String CONFIGS_REFUNDCODE = "REFUNDCODE";
 	public static final String CONFIGS_LANGUAGEAMOUNT = "LANGUAGEAMOUNT";
 	public static final String CONFIGS_FIRSTLANGUAGENAME= "FIRSTLANGUAGENAME";
 	public static final String CONFIGS_FIRSTLANGUAGEABBR = "FIRSTLANGUAGEABBR";

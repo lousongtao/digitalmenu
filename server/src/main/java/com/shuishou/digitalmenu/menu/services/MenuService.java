@@ -175,6 +175,9 @@ public class MenuService implements IMenuService {
 			JSONObject joPrinter = (JSONObject) jaPrinter.get(i);
 			int printerId = joPrinter.getInt("printerId");
 			int printStyle = joPrinter.getInt("printStyle");
+			String templateFile = null;
+			if (joPrinter.has("templateFile"))
+			    templateFile = joPrinter.getString("templateFile");
 			Printer p = printerDA.getPrinterById(printerId);
 			if (p == null){
 				return new ObjectResult("cannot find Printer by id : "+ printerId, false, null);
@@ -183,6 +186,7 @@ public class MenuService implements IMenuService {
 			cp.setPrinter(p);
 			cp.setCategory2(c2);
 			cp.setPrintStyle(printStyle);
+			cp.setPrintTemplateFile(templateFile);
 			c2.addCategory2Printer(cp);
 			category2PrinterDA.save(cp);
 		}
@@ -514,6 +518,10 @@ public class MenuService implements IMenuService {
 			JSONObject joPrinter = (JSONObject) jaPrinter.get(i);
 			int printerId = joPrinter.getInt("printerId");
 			int printStyle = joPrinter.getInt("printStyle");
+			String templateFile = null;
+			if (joPrinter.has("templateFile")) {
+				templateFile = joPrinter.getString("templateFile");
+			}
 			Printer p = printerDA.getPrinterById(printerId);
 			if (p == null){
 				return new ObjectResult("cannot find Printer by id : "+ printerId, false, null);
@@ -522,6 +530,7 @@ public class MenuService implements IMenuService {
 			cp.setPrinter(p);
 			cp.setCategory2(c2);
 			cp.setPrintStyle(printStyle);
+			cp.setPrintTemplateFile(templateFile);
 			c2.addCategory2Printer(cp);
 			category2PrinterDA.save(cp);
 		}

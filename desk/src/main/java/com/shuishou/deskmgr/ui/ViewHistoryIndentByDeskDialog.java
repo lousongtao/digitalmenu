@@ -231,6 +231,14 @@ public class ViewHistoryIndentByDeskDialog extends JDialog implements ActionList
 			JOptionPane.showMessageDialog(mainFrame, "This order is not PAID status, cannot do refund.");
 			return;
 		}
+		String code = JOptionPane.showInputDialog(this, Messages.getString("ViewHistoryIndentByDeskDialog.InputCodeOfRefund"));
+		if (code == null){
+			return;
+		}
+		if (!code.equals(mainFrame.getConfigsMap().get(ConstantValue.CONFIGS_REFUNDCODE))){
+			JOptionPane.showMessageDialog(this, Messages.getString("MainFrame.ErrorCashdrawerCode"));
+			return;
+		}
 		setVisible(false);
 		RefundIndentDetailDialog refundDialog = new RefundIndentDetailDialog(mainFrame, desk, indent);
 		refundDialog.setVisible(true);

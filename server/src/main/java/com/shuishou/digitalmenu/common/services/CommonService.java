@@ -222,15 +222,16 @@ public class CommonService implements ICommonService {
 	@Transactional
 	public ObjectResult updateDesk(long userId, int id, String name, int sequence) {
 		Desk desk = deskDA.getDeskById(id);
-		String oldname = desk.getName();
+
 		if (desk == null)
 			return new ObjectResult("No desk, id = "+ id, false);
-		desk.setName(name);
+        String oldName = desk.getName();
+        desk.setName(name);
 		desk.setSequence(sequence);
 		deskDA.updateDesk(desk);
 		// write log.
 		UserData selfUser = userDA.getUserById(userId);
-		logService.write(selfUser, LogData.LogType.CHANGE_DESK.toString(), "User "+ selfUser + " update desk name from "+ oldname + " to "+ name);
+		logService.write(selfUser, LogData.LogType.CHANGE_DESK.toString(), "User "+ selfUser + " update desk name from "+ oldName + " to "+ name);
 
 		return new ObjectResult(Result.OK, true);
 	}
@@ -438,7 +439,7 @@ public class CommonService implements ICommonService {
 		//if there are not indents on sub tables, no need to merge indent
 		if (subDesksIndents.isEmpty()){
 			//do nothing
-		} else if (!subDesksIndents.isEmpty()){
+		} else {
 			if (mainIndent == null){
 				mainIndent = new Indent();
 				mainIndent.setDeskName(mainDesk.getName());

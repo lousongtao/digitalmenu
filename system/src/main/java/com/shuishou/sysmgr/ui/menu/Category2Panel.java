@@ -89,7 +89,7 @@ public class Category2Panel extends JPanel implements CommonDialogOperatorIFC{
 		ArrayList<Printer> listPrinter = parent.getMainFrame().getListPrinters();
 		if (listPrinter != null){
 			for(Printer p : listPrinter){
-				PrinterChoosed pc = new PrinterChoosed(p, false, ConstantValue.CATEGORY2_PRINT_TYPE_SEPARATELY);
+				PrinterChoosed pc = new PrinterChoosed(p, false, ConstantValue.CATEGORY2_PRINT_TYPE_SEPARATELY, null);
 				PrinterPanel pp = new PrinterPanel(pc);
 				pPrinter.add(pp);
 				printerPanelList.add(pp);
@@ -155,6 +155,7 @@ public class Category2Panel extends JPanel implements CommonDialogOperatorIFC{
 				JSONObject jo = new JSONObject();
 				jo.put("printerId", pp.getPrinterChoosed().printer.getId());
 				jo.put("printStyle", pp.getPrintStyle());
+				jo.put("templateFile", pp.getPrintTemplateFile());
 				ja.put(jo);
 			}
 		}
@@ -228,6 +229,7 @@ public class Category2Panel extends JPanel implements CommonDialogOperatorIFC{
 					if (cp.getPrinter().getId() == printerPanelList.get(i).getPrinterChoosed().printer.getId()) {
 						printerPanelList.get(i).setSelect(true);
 						printerPanelList.get(i).setPrintStyle(cp.getPrintStyle());
+						printerPanelList.get(i).setPrintTemplateFile(cp.getPrintTemplateFile());
 					}
 				}
 			}
@@ -248,7 +250,7 @@ public class Category2Panel extends JPanel implements CommonDialogOperatorIFC{
 		ArrayList<Printer> listPrinter = parent.getMainFrame().getListPrinters();
 		if (listPrinter != null){
 			for(Printer p : listPrinter){
-				PrinterChoosed pc = new PrinterChoosed(p, false, ConstantValue.CATEGORY2_PRINT_TYPE_SEPARATELY);
+				PrinterChoosed pc = new PrinterChoosed(p, false, ConstantValue.CATEGORY2_PRINT_TYPE_SEPARATELY, null);
 				PrinterPanel pp = new PrinterPanel(pc);
 				pPrinter.add(pp);
 				printerPanelList.add(pp);
@@ -283,12 +285,17 @@ public class Category2Panel extends JPanel implements CommonDialogOperatorIFC{
 		private JCheckBox cbPrinterName = new JCheckBox();
 		private JRadioButton rbPrintTogether = new JRadioButton(Messages.getString("Category2Panel.PrintTogether"), false);
 		private JRadioButton rbPrintSeparately = new JRadioButton(Messages.getString("Category2Panel.PrintSeparately"), false);
+		private JLabel lbTemplateFile = new JLabel(Messages.getString("Category2Panel.TemplateFile"));
+		private JTextField tfTemplateFile = new JTextField();
 		private PrinterChoosed pc;
 		public PrinterPanel(PrinterChoosed pc){
 			this.pc = pc;
 			cbPrinterName.setText(pc.printer.getName());
 			this.setLayout(new FlowLayout(FlowLayout.LEFT));
-			
+			Dimension d = tfTemplateFile.getPreferredSize();
+			tfTemplateFile.setPreferredSize(new Dimension(150, d.height));
+            tfTemplateFile.setMinimumSize(new Dimension(150, d.height));
+            tfTemplateFile.setMaximumSize(new Dimension(150, d.height));
 			cbPrinterName.setPreferredSize(new Dimension(120, 30));
 			cbPrinterName.setMinimumSize(new Dimension(120, 30));
 			cbPrinterName.setMaximumSize(new Dimension(120, 30));
@@ -298,14 +305,20 @@ public class Category2Panel extends JPanel implements CommonDialogOperatorIFC{
 			this.add(cbPrinterName);
 			this.add(rbPrintSeparately);
 			this.add(rbPrintTogether);
+			this.add(lbTemplateFile);
+			this.add(tfTemplateFile);
 			rbPrintSeparately.setVisible(false);
 			rbPrintTogether.setVisible(false);
+			tfTemplateFile.setVisible(false);
+			lbTemplateFile.setVisible(false);
 			cbPrinterName.addChangeListener(new ChangeListener(){
 
 				@Override
 				public void stateChanged(ChangeEvent e) {
 					rbPrintSeparately.setVisible(cbPrinterName.isSelected());
 					rbPrintTogether.setVisible(cbPrinterName.isSelected());
+					lbTemplateFile.setVisible(cbPrinterName.isSelected());
+					tfTemplateFile.setVisible(cbPrinterName.isSelected());
 				}
 				
 			});
@@ -315,6 +328,8 @@ public class Category2Panel extends JPanel implements CommonDialogOperatorIFC{
 			cbPrinterName.setSelected(b);
 			rbPrintSeparately.setVisible(b);
 			rbPrintTogether.setVisible(b);
+            lbTemplateFile.setVisible(b);
+            tfTemplateFile.setVisible(b);
 		}
 		
 		public boolean isSelected(){
@@ -334,6 +349,14 @@ public class Category2Panel extends JPanel implements CommonDialogOperatorIFC{
 				rbPrintTogether.setSelected(true);
 			}
 		}
+
+		public String getPrintTemplateFile(){
+		    return tfTemplateFile.getText();
+        }
+
+        public void setPrintTemplateFile(String s){
+		    tfTemplateFile.setText(s);
+        }
 		
 		public PrinterChoosed getPrinterChoosed(){
 			return pc;
@@ -343,6 +366,8 @@ public class Category2Panel extends JPanel implements CommonDialogOperatorIFC{
 			cbPrinterName.setEnabled(b);
 			rbPrintTogether.setEnabled(b);
 			rbPrintSeparately.setEnabled(b);
+			tfTemplateFile.setEditable(b);
+			lbTemplateFile.setEnabled(b);
 		}
 	}
 	
@@ -350,10 +375,12 @@ public class Category2Panel extends JPanel implements CommonDialogOperatorIFC{
 		Printer printer;
 		boolean isChoosed = false;
 		int printStyle;
-		public PrinterChoosed(Printer p, boolean c, int ps){
+		String templateFile;
+		public PrinterChoosed(Printer p, boolean c, int ps, String tf){
 			printer = p;
 			isChoosed = c;
 			printStyle = ps;
+			templateFile = tf;
 		}
 	}
 }

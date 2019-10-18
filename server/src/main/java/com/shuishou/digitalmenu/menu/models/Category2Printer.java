@@ -28,6 +28,10 @@ public class Category2Printer {
 	@Column(nullable = false)
 	private int printStyle;
 
+	//设定打印模板, 可以为空, 该值为空时, 使用默认打印模板
+	@Column
+	private String printTemplateFile;
+
 	public long getId() {
 		return id;
 	}
@@ -60,7 +64,15 @@ public class Category2Printer {
 		this.printStyle = printStyle;
 	}
 
-	@Override
+    public String getPrintTemplateFile() {
+        return printTemplateFile;
+    }
+
+    public void setPrintTemplateFile(String printTemplateFile) {
+        this.printTemplateFile = printTemplateFile;
+    }
+
+    @Override
 	public String toString() {
 		return "Category2Printer [category2=" + category2 + ", printer=" + printer + "]";
 	}

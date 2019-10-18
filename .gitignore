@@ -3,6 +3,8 @@ dm-deskmgr.log*
 logs/
 build/
 */target/
+.idea/
+backupDB/
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/

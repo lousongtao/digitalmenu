@@ -63,14 +63,8 @@ public class PrintThread {
 	/**
 	 * 
 	 * 根据任务类型选择打印模板
-	 * 
-	 * @param missionType
-	 *            任务类型
-	 * 
 	 * @return
-	 * 
 	 * @throws IOException
-	 * 
 	 */
 	private static String jsonTemplateByPrintType(int printType) throws IOException {
 		String template = "";

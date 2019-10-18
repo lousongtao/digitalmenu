@@ -153,6 +153,8 @@ public class RefundIndentDetailDialog extends JDialog implements ActionListener{
 	
 	private void refreshLabelText(){
 		double choosedPrice = 0;
+		String info = "Table " + desk.getName() + "    Sequence " + indent.getDailySequence()
+				+ "    Total Price $" + indent.getFormatTotalPrice();
 		for (int i = 0; i < tableModel.getData().size(); i++) {
 			if (tableModel.getData().get(i).isChoosed()){
 				IndentDetail d = tableModel.getData().get(i).getIndentDetail();
@@ -162,13 +164,14 @@ public class RefundIndentDetailDialog extends JDialog implements ActionListener{
 					return;
 				}
 				if (dish.getPurchaseType() == ConstantValue.DISH_PURCHASETYPE_UNIT)
-					choosedPrice += dish.getPrice() * d.getAmount();
+					choosedPrice += d.getDishPrice();
 				else if (dish.getPurchaseType() == ConstantValue.DISH_PURCHASETYPE_WEIGHT)
 					choosedPrice += dish.getPrice() * d.getWeight();
 			}
 		}
 		if (choosedPrice > 0)
-			lbInfo.setText("Table " + desk.getName() + "    Sequence " + indent.getDailySequence() + "    Total Price $" + indent.getFormatTotalPrice() + "    Choosed $" + String.format(ConstantValue.FORMAT_DOUBLE, choosedPrice));
+			info += "    Choosed $"	+ String.format(ConstantValue.FORMAT_DOUBLE, choosedPrice);
+		lbInfo.setText(info);
 	}
 	
 	private void refreshData(){

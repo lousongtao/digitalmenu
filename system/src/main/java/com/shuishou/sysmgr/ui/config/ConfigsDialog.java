@@ -41,6 +41,7 @@ public class ConfigsDialog extends JDialog implements ActionListener{
 	private JButton btnSaveOpenCashdrawerCode = new JButton("Save");
 	private JButton btnSaveCancelOrderCode = new JButton("Save");
 	private JButton btnSaveClearTableCode = new JButton("Save");
+	private JButton btnSaveRefundCode = new JButton("Save");
 	private JTextField tfOldConfirmCode;
 	private NumberTextField tfNewConfirmCode;
 	private JTextField tfOldOpenCashdrawerCode;
@@ -49,7 +50,9 @@ public class ConfigsDialog extends JDialog implements ActionListener{
 	private NumberTextField tfNewCancelOrderCode;
 	private JTextField tfOldClearTableCode;
 	private NumberTextField tfNewClearTableCode;
-	
+	private JTextField tfOldRefundCode;
+	private NumberTextField tfNewRefundCode;
+
 	private JRadioButton rbLanguageAmount1 = new JRadioButton("1");
 	private JRadioButton rbLanguageAmount2 = new JRadioButton("2");
 	private JTextField tfFirstLanguageName = new JTextField();
@@ -130,7 +133,19 @@ public class ConfigsDialog extends JDialog implements ActionListener{
 		pClearTableCode.add(tfNewClearTableCode, new GridBagConstraints(3, 0, 1, 1,1,0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0,10,0,0), 0, 0));;
 		pClearTableCode.add(btnSaveClearTableCode, new GridBagConstraints(4, 0, 1, 1,0,0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,10,0,0), 0, 0));;
 		pClearTableCode.setBorder(BorderFactory.createTitledBorder("Clear Table Code"));
-		
+
+		JLabel lbOldRefundCode = new JLabel("old code");
+		JLabel lbNewRefundCode = new JLabel("new code");
+		tfOldRefundCode = new JTextField();
+		tfNewRefundCode = new NumberTextField(false);
+		JPanel pRefundCode = new JPanel(new GridBagLayout());
+		pRefundCode.add(lbOldRefundCode, new GridBagConstraints(0, 0, 1, 1,0,0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,10,0,0), 0, 0));;
+		pRefundCode.add(tfOldRefundCode, new GridBagConstraints(1, 0, 1, 1,1,0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0,10,0,0), 0, 0));;
+		pRefundCode.add(lbNewRefundCode, new GridBagConstraints(2, 0, 1, 1,0,0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,10,0,0), 0, 0));;
+		pRefundCode.add(tfNewRefundCode, new GridBagConstraints(3, 0, 1, 1,1,0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0,10,0,0), 0, 0));;
+		pRefundCode.add(btnSaveRefundCode, new GridBagConstraints(4, 0, 1, 1,0,0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,10,0,0), 0, 0));;
+		pRefundCode.setBorder(BorderFactory.createTitledBorder("Refund Code"));
+
 		ButtonGroup bgLanguageAmount = new ButtonGroup();
 		bgLanguageAmount.add(rbLanguageAmount1);
 		bgLanguageAmount.add(rbLanguageAmount2);
@@ -197,6 +212,7 @@ public class ConfigsDialog extends JDialog implements ActionListener{
 		tabPassword.add(pOpenCashdrawerCode, new GridBagConstraints(0, 1, 1, 1,1,1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(10,0,0,0), 0, 0));;
 		tabPassword.add(pClearTableCode, 	new GridBagConstraints(0, 2, 1, 1,1,1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(10,0,0,0), 0, 0));;
 		tabPassword.add(pCancelOrderCode, 	new GridBagConstraints(0, 3, 1, 1,1,1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(10,0,0,0), 0, 0));;
+		tabPassword.add(pRefundCode, 		new GridBagConstraints(0, 4, 1, 1,1,1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(10,0,0,0), 0, 0));;
 		tabLanguage.add(pLanguageSet, 		new GridBagConstraints(0, 1, 1, 1,1,1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(10,0,0,0), 0, 0));;
 		tabMember.add(pMember, 				new GridBagConstraints(0, 1, 1, 1,1,1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(10,0,0,0), 0, 0));;
 		tabMember.add(pBranchName, 			new GridBagConstraints(0, 2, 1, 1,1,1, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(10,0,0,0), 0, 0));;
@@ -222,7 +238,8 @@ public class ConfigsDialog extends JDialog implements ActionListener{
 		btnSaveBranchName.addActionListener(this);
 		btnSavePrintTicket.addActionListener(this);
 		btnSaveMemberBalanceCode.addActionListener(this);
-		
+		btnSaveRefundCode.addActionListener(this);
+
 		setSize(500, 500);
 		this.setLocation((int)(mainFrame.getWidth() / 2 - this.getWidth() /2 + mainFrame.getLocation().getX()), 
 				(int)(mainFrame.getHeight() / 2 - this.getHeight() / 2 + mainFrame.getLocation().getY()));
@@ -270,6 +287,12 @@ public class ConfigsDialog extends JDialog implements ActionListener{
 				return;
 			}
 			doSaveCode(tfOldOpenCashdrawerCode.getText(), tfNewOpenCashdrawerCode.getText(), ConstantValue.CONFIGS_OPENCASHDRAWERCODE);
+		} else if (e.getSource() == btnSaveRefundCode){
+			if (tfNewRefundCode.getText() == null || tfNewRefundCode.getText().length() == 0){
+				JOptionPane.showMessageDialog(this, "No input new code");
+				return;
+			}
+			doSaveCode(tfOldRefundCode.getText(), tfNewRefundCode.getText(), ConstantValue.CONFIGS_REFUNDCODE);
 		} else if (e.getSource() == btnSaveLanguageSet){
 			doSaveLanguageSet();
 		} else if (e.getSource() == btnSaveCancelOrderCode){
