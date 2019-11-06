@@ -274,7 +274,7 @@ public class StatisticsPanel extends JPanel implements ActionListener{
 			tabReport.setRowSorter(trs);
 			
 			tabReport.setAutoCreateRowSorter(false);
-			showSellChart(result.data);
+			showPaywayChart(result.data);
 			double totalMoney = 0;
 			int totalAmount = 0;
 			for (int i = 0; i < result.data.size(); i++) {
@@ -324,7 +324,7 @@ public class StatisticsPanel extends JPanel implements ActionListener{
 			tabReport.setRowSorter(trs);
 			tabReport.setAutoCreateRowSorter(false);
 			tabReport.getRowSorter().toggleSortOrder(0);
-			showSellChart(result.data);
+			showPeriodSellChart(result.data);
 			double totalMoney = 0;
 			int totalAmount = 0;
 			double totalWeight = 0;
@@ -339,42 +339,42 @@ public class StatisticsPanel extends JPanel implements ActionListener{
 		}
 	}
 	
-//	private void showPaywayChart(ArrayList<StatItem> items){
-//		//创建主题样式
-//        StandardChartTheme mChartTheme = new StandardChartTheme("CN");
-//        //设置标题字体
-//        mChartTheme.setExtraLargeFont(new Font("黑体", Font.BOLD, 20));
-//        //设置轴向字体
-//        mChartTheme.setLargeFont(new Font("宋体", Font.CENTER_BASELINE, 15));
-//        //设置图例字体
-//        mChartTheme.setRegularFont(new Font("宋体", Font.CENTER_BASELINE, 15));
-//        //应用主题样式
-//        ChartFactory.setChartTheme(mChartTheme);
-//        pChart.removeAll();
-//		JTabbedPane tab = new JTabbedPane();
-//
-//		DefaultPieDataset pieMoneyDataset = new DefaultPieDataset();
-//		DefaultPieDataset pieAmountDataset = new DefaultPieDataset();
-//		DefaultCategoryDataset barMoneyDataset = new DefaultCategoryDataset();
-//		DefaultCategoryDataset barAmountDataset = new DefaultCategoryDataset();
-//		for (int i = 0; i < items.size(); i++) {
-//			StatItem si = items.get(i);
-//			pieMoneyDataset.setValue(si.itemName, si.paidPrice);
-//			pieAmountDataset.setValue(si.itemName, si.soldAmount);
-//			barMoneyDataset.setValue(si.paidPrice, si.itemName, "");
-//			barAmountDataset.setValue(si.soldAmount, si.itemName, "");
-//		}
-//		JFreeChart pie_money = ChartFactory.createPieChart("", pieMoneyDataset,true, true, false);
-//		JFreeChart pie_amount = ChartFactory.createPieChart("", pieAmountDataset, true, true, false);
-//		JFreeChart bar_money = ChartFactory.createBarChart("", "", "", barMoneyDataset);
-//		JFreeChart bar_amount = ChartFactory.createBarChart("", "", "", barAmountDataset);
-//		tab.addTab("Money - Pie", new ChartPanel(pie_money));
-//		tab.addTab("Money - Bar", new ChartPanel(bar_money));
-//		tab.addTab("Amount - Pie", new ChartPanel(pie_amount));
-//		tab.addTab("Amount - Bar", new ChartPanel(bar_amount));
-//		pChart.add(tab);
-//		pChart.updateUI();
-//	}
+	private void showPaywayChart(ArrayList<StatItem> items){
+		//创建主题样式
+        StandardChartTheme mChartTheme = new StandardChartTheme("CN");
+        //设置标题字体
+        mChartTheme.setExtraLargeFont(new Font("黑体", Font.BOLD, 20));
+        //设置轴向字体
+        mChartTheme.setLargeFont(new Font("宋体", Font.CENTER_BASELINE, 15));
+        //设置图例字体
+        mChartTheme.setRegularFont(new Font("宋体", Font.CENTER_BASELINE, 15));
+        //应用主题样式
+        ChartFactory.setChartTheme(mChartTheme);
+        pChart.removeAll();
+		JTabbedPane tab = new JTabbedPane();
+
+		DefaultPieDataset pieMoneyDataset = new DefaultPieDataset();
+		DefaultPieDataset pieAmountDataset = new DefaultPieDataset();
+		DefaultCategoryDataset barMoneyDataset = new DefaultCategoryDataset();
+		DefaultCategoryDataset barAmountDataset = new DefaultCategoryDataset();
+		for (int i = 0; i < items.size(); i++) {
+			StatItem si = items.get(i);
+			pieMoneyDataset.setValue(si.itemName, si.paidPrice);
+			pieAmountDataset.setValue(si.itemName, si.soldAmount);
+			barMoneyDataset.setValue(si.paidPrice, si.itemName, "");
+			barAmountDataset.setValue(si.soldAmount, si.itemName, "");
+		}
+		JFreeChart pie_money = ChartFactory.createPieChart("", pieMoneyDataset,true, true, false);
+		JFreeChart pie_amount = ChartFactory.createPieChart("", pieAmountDataset, true, true, false);
+		JFreeChart bar_money = ChartFactory.createBarChart("", "", "", barMoneyDataset);
+		JFreeChart bar_amount = ChartFactory.createBarChart("", "", "", barAmountDataset);
+		tab.addTab("Money - Pie", new ChartPanel(pie_money));
+		tab.addTab("Money - Bar", new ChartPanel(bar_money));
+		tab.addTab("Amount - Pie", new ChartPanel(pie_amount));
+		tab.addTab("Amount - Bar", new ChartPanel(bar_amount));
+		pChart.add(tab);
+		pChart.updateUI();
+	}
 	
 	private void showSellChart(ArrayList<StatItem> items){
 		//创建主题样式  
@@ -417,46 +417,46 @@ public class StatisticsPanel extends JPanel implements ActionListener{
 		pChart.updateUI();
 	}
 	
-//	private void showPeriodSellChart(ArrayList<StatItem> items){
-//		//创建主题样式
-//        StandardChartTheme mChartTheme = new StandardChartTheme("CN");
-//        //设置标题字体
-//        mChartTheme.setExtraLargeFont(new Font("黑体", Font.BOLD, 20));
-//        //设置轴向字体
-//        mChartTheme.setLargeFont(new Font("宋体", Font.CENTER_BASELINE, 15));
-//        //设置图例字体
-//        mChartTheme.setRegularFont(new Font("宋体", Font.CENTER_BASELINE, 15));
-//        //应用主题样式
-//        ChartFactory.setChartTheme(mChartTheme);
-//        pChart.removeAll();
-//		JTabbedPane tab = new JTabbedPane();
-//
-//		DefaultPieDataset pieMoneyDataset = new DefaultPieDataset();
-//		DefaultCategoryDataset barMoneyDataset = new DefaultCategoryDataset();
-//		DefaultPieDataset pieAmountDataset = new DefaultPieDataset();
-//		DefaultCategoryDataset barAmountDataset = new DefaultCategoryDataset();
-//		for (int i = 0; i < items.size(); i++) {
-//			StatItem si = items.get(i);
-//			pieMoneyDataset.setValue(si.itemName, si.totalPrice);
-//			barMoneyDataset.setValue(si.totalPrice, si.itemName, "");
-//			pieAmountDataset.setValue(si.itemName, si.soldAmount);
-//			barAmountDataset.setValue(si.soldAmount, si.itemName, "");
-//		}
-//		JFreeChart pie_money = ChartFactory.createPieChart("", pieMoneyDataset,true, true, false);
-//		JFreeChart bar_money = ChartFactory.createBarChart("", "goods", "sold", barMoneyDataset);
-//		JFreeChart pie_amount = ChartFactory.createPieChart("", pieAmountDataset,true, true, false);
-//		JFreeChart bar_amount = ChartFactory.createBarChart("", "goods", "sold", barAmountDataset);
-//		pie_money.removeLegend();
-//		bar_money.removeLegend();
-//		pie_amount.removeLegend();
-//		bar_amount.removeLegend();
-//		tab.addTab("Money - Pie", new ChartPanel(pie_money));
-//		tab.addTab("Money - Bar", new ChartPanel(bar_money));
-//		tab.addTab("Amount - Pie", new ChartPanel(pie_amount));
-//		tab.addTab("Amount - Bar", new ChartPanel(bar_amount));
-//		pChart.add(tab);
-//		pChart.updateUI();
-//	}
+	private void showPeriodSellChart(ArrayList<StatItem> items){
+		//创建主题样式
+        StandardChartTheme mChartTheme = new StandardChartTheme("CN");
+        //设置标题字体
+        mChartTheme.setExtraLargeFont(new Font("黑体", Font.BOLD, 20));
+        //设置轴向字体
+        mChartTheme.setLargeFont(new Font("宋体", Font.CENTER_BASELINE, 15));
+        //设置图例字体
+        mChartTheme.setRegularFont(new Font("宋体", Font.CENTER_BASELINE, 15));
+        //应用主题样式
+        ChartFactory.setChartTheme(mChartTheme);
+        pChart.removeAll();
+		JTabbedPane tab = new JTabbedPane();
+
+		DefaultPieDataset pieMoneyDataset = new DefaultPieDataset();
+		DefaultCategoryDataset barMoneyDataset = new DefaultCategoryDataset();
+		DefaultPieDataset pieAmountDataset = new DefaultPieDataset();
+		DefaultCategoryDataset barAmountDataset = new DefaultCategoryDataset();
+		for (int i = 0; i < items.size(); i++) {
+			StatItem si = items.get(i);
+			pieMoneyDataset.setValue(si.itemName, si.totalPrice);
+			barMoneyDataset.setValue(si.totalPrice, si.itemName, "");
+			pieAmountDataset.setValue(si.itemName, si.soldAmount);
+			barAmountDataset.setValue(si.soldAmount, si.itemName, "");
+		}
+		JFreeChart pie_money = ChartFactory.createPieChart("", pieMoneyDataset,true, true, false);
+		JFreeChart bar_money = ChartFactory.createBarChart("", "goods", "sold", barMoneyDataset);
+		JFreeChart pie_amount = ChartFactory.createPieChart("", pieAmountDataset,true, true, false);
+		JFreeChart bar_amount = ChartFactory.createBarChart("", "goods", "sold", barAmountDataset);
+		pie_money.removeLegend();
+		bar_money.removeLegend();
+		pie_amount.removeLegend();
+		bar_amount.removeLegend();
+		tab.addTab("Money - Pie", new ChartPanel(pie_money));
+		tab.addTab("Money - Bar", new ChartPanel(bar_money));
+		tab.addTab("Amount - Pie", new ChartPanel(pie_amount));
+		tab.addTab("Amount - Bar", new ChartPanel(bar_amount));
+		pChart.add(tab);
+		pChart.updateUI();
+	}
 	
 	private void doExport(){
 		if (tabReport.getRowCount() == 0)
