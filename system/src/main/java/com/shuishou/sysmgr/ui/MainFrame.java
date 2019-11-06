@@ -68,6 +68,8 @@ public class MainFrame extends JFrame implements ActionListener{
 	public static String SERVER_URL;
 	public static String functionlist;
 	public static String printerName;
+	public static String openhour_starttime = "00:00:00";
+	public static String openhour_endtime = "23:59:59";
 	private static final String CARDLAYOUT_MENUMGMT= "menumgmt"; 
 	private static final String CARDLAYOUT_ACCOUNTMGMT= "accountmgmt"; 
 	private static final String CARDLAYOUT_DESKMGMT= "deskmgmt"; 
@@ -589,6 +591,10 @@ public class MainFrame extends JFrame implements ActionListener{
 		MainFrame.language = prop.getProperty("language");
 		MainFrame.functionlist = prop.getProperty("mainframe.functionlist");
 		MainFrame.printerName = prop.getProperty("printerName");
+		if (prop.getProperty("openhour.starttime") != null)
+			MainFrame.openhour_starttime = prop.getProperty("openhour.starttime");
+		if (prop.getProperty("openhour.endtime") != null)
+			MainFrame.openhour_endtime = prop.getProperty("openhour.endtime");
 		MainFrame f = new MainFrame();
 		waitDlg.setVisible(false);
 		f.setVisible(true);

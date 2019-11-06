@@ -534,7 +534,7 @@ public class OpenTableDialog extends JDialog implements ActionListener{
 		}
 		
 		if (dish.getPurchaseType() == ConstantValue.DISH_PURCHASETYPE_WEIGHT){
-			NumberInputDialog numdlg = new NumberInputDialog(this, "Input", Messages.getString("OpenTableDialog.InputWeight"), false);
+			NumberInputDialog numdlg = new NumberInputDialog(this, "Input", Messages.getString("OpenTableDialog.InputWeight"), true);
 			numdlg.setVisible(true);
 			if (!numdlg.isConfirm)
 				return;

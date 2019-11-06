@@ -10,7 +10,7 @@ public class GenerateLicenseKey {
 	 * @param args
 	 */
 	public static void main(String[] args){
-		String customerName = "judian";
+		String customerName = "jinliufu";
 		System.out.println(customerName);
 		byte[] data = (customerName + "JS-Link").getBytes(); 
 		MessageDigest md = null;

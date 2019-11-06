@@ -9,8 +9,6 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,7 +42,6 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.StandardChartTheme;
-import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
@@ -53,7 +50,6 @@ import com.google.gson.reflect.TypeToken;
 import com.shuishou.sysmgr.ConstantValue;
 import com.shuishou.sysmgr.Messages;
 import com.shuishou.sysmgr.beans.HttpResult;
-import com.shuishou.sysmgr.beans.IndentDetail;
 import com.shuishou.sysmgr.beans.StatItem;
 import com.shuishou.sysmgr.http.HttpUtil;
 import com.shuishou.sysmgr.ui.MainFrame;
@@ -67,7 +63,10 @@ public class StatisticsPanel extends JPanel implements ActionListener{
 	private static final String CARDLAYOUT_SELL = "SELL";
 	private static final String CARDLAYOUT_SELLPERIOD = "SELLPERIOD";
 	private MainFrame mainFrame;
-	
+
+	//统计时间默认0点到23:59:59, 即一整天. 需要特殊指定时间的, 在配置文件中修改
+	private String startTime = MainFrame.openhour_starttime;
+	private String endTime = MainFrame.openhour_endtime;
 	private JDatePicker dpStartDate = new JDatePicker();
 	private JDatePicker dpEndDate = new JDatePicker();
 	private JRadioButton rbPayway = new JRadioButton(Messages.getString("StatisticsPanel.Payway"));
@@ -169,11 +168,13 @@ public class StatisticsPanel extends JPanel implements ActionListener{
 		JLabel lbEndDate = new JLabel(Messages.getString("StatisticsPanel.EndDate"));
 		
 		JPanel pQueryTime = new JPanel(new GridBagLayout());
-		pQueryTime.add(lbStartDate,	new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 0, 0), 0, 0));
-		pQueryTime.add(dpStartDate,	new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 0, 0), 0, 0));
-		pQueryTime.add(lbEndDate,	new GridBagConstraints(2, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 0, 0), 0, 0));
-		pQueryTime.add(dpEndDate,	new GridBagConstraints(3, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 0, 0), 0, 0));
-		pQueryTime.add(pQueryTimeButton,	new GridBagConstraints(0, 1, 4, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 0, 0), 0, 0));
+		JLabel lbTimeRange = new JLabel(Messages.getString("StatisticsPanel.QueryTimeRange") + startTime + " - " + endTime);
+		pQueryTime.add(lbTimeRange,	new GridBagConstraints(0, 0, 4, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 0, 0), 0, 0));
+		pQueryTime.add(lbStartDate,	new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 0, 0), 0, 0));
+		pQueryTime.add(dpStartDate,	new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 0, 0), 0, 0));
+		pQueryTime.add(lbEndDate,	new GridBagConstraints(2, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 0, 0), 0, 0));
+		pQueryTime.add(dpEndDate,	new GridBagConstraints(3, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 0, 0), 0, 0));
+		pQueryTime.add(pQueryTimeButton,	new GridBagConstraints(0, 2, 4, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 0, 0), 0, 0));
 		
 		JPanel pQuery = new JPanel(new GridLayout(0, 1, 0, 20));
 		pQuery.add(btnQuery);
@@ -210,16 +211,16 @@ public class StatisticsPanel extends JPanel implements ActionListener{
 		params.put("userId", MainFrame.getLoginUser().getId() + "");
 		if (dpStartDate.getModel() != null && dpStartDate.getModel().getValue() != null){
 			Calendar c = (Calendar)dpStartDate.getModel().getValue();
-			c.set(Calendar.HOUR_OF_DAY, 0);
-			c.set(Calendar.MINUTE, 0);
-			c.set(Calendar.SECOND, 0);
+			c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(startTime.split(":")[0]));
+			c.set(Calendar.MINUTE, Integer.parseInt(startTime.split(":")[1]));
+			c.set(Calendar.SECOND, Integer.parseInt(startTime.split(":")[2]));
 			params.put("startDate", ConstantValue.DFYMDHMS.format(c.getTime()));
 		}
 		if (dpEndDate.getModel() != null && dpEndDate.getModel().getValue() != null){
 			Calendar c = (Calendar)dpEndDate.getModel().getValue();
-			c.set(Calendar.HOUR_OF_DAY, 23);
-			c.set(Calendar.MINUTE, 59);
-			c.set(Calendar.SECOND, 59);
+			c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(endTime.split(":")[0]));
+			c.set(Calendar.MINUTE, Integer.parseInt(endTime.split(":")[1]));
+			c.set(Calendar.SECOND, Integer.parseInt(endTime.split(":")[2]));
 			params.put("endDate", ConstantValue.DFYMDHMS.format(c.getTime()));
 		}
 		if (rbPayway.isSelected()){
@@ -273,7 +274,7 @@ public class StatisticsPanel extends JPanel implements ActionListener{
 			tabReport.setRowSorter(trs);
 			
 			tabReport.setAutoCreateRowSorter(false);
-			showPaywayChart(result.data);
+			showSellChart(result.data);
 			double totalMoney = 0;
 			int totalAmount = 0;
 			for (int i = 0; i < result.data.size(); i++) {
@@ -323,7 +324,7 @@ public class StatisticsPanel extends JPanel implements ActionListener{
 			tabReport.setRowSorter(trs);
 			tabReport.setAutoCreateRowSorter(false);
 			tabReport.getRowSorter().toggleSortOrder(0);
-			showPeriodSellChart(result.data);
+			showSellChart(result.data);
 			double totalMoney = 0;
 			int totalAmount = 0;
 			double totalWeight = 0;
@@ -338,42 +339,42 @@ public class StatisticsPanel extends JPanel implements ActionListener{
 		}
 	}
 	
-	private void showPaywayChart(ArrayList<StatItem> items){
-		//创建主题样式  
-        StandardChartTheme mChartTheme = new StandardChartTheme("CN");  
-        //设置标题字体  
-        mChartTheme.setExtraLargeFont(new Font("黑体", Font.BOLD, 20));  
-        //设置轴向字体  
-        mChartTheme.setLargeFont(new Font("宋体", Font.CENTER_BASELINE, 15));  
-        //设置图例字体  
-        mChartTheme.setRegularFont(new Font("宋体", Font.CENTER_BASELINE, 15));  
-        //应用主题样式  
-        ChartFactory.setChartTheme(mChartTheme);  
-        pChart.removeAll();
-		JTabbedPane tab = new JTabbedPane();
-		
-		DefaultPieDataset pieMoneyDataset = new DefaultPieDataset();
-		DefaultPieDataset pieAmountDataset = new DefaultPieDataset();
-		DefaultCategoryDataset barMoneyDataset = new DefaultCategoryDataset();
-		DefaultCategoryDataset barAmountDataset = new DefaultCategoryDataset();
-		for (int i = 0; i < items.size(); i++) {
-			StatItem si = items.get(i);
-			pieMoneyDataset.setValue(si.itemName, si.paidPrice);
-			pieAmountDataset.setValue(si.itemName, si.soldAmount);
-			barMoneyDataset.setValue(si.paidPrice, si.itemName, "");
-			barAmountDataset.setValue(si.soldAmount, si.itemName, "");
-		}
-		JFreeChart pie_money = ChartFactory.createPieChart("", pieMoneyDataset,true, true, false);
-		JFreeChart pie_amount = ChartFactory.createPieChart("", pieAmountDataset, true, true, false);
-		JFreeChart bar_money = ChartFactory.createBarChart("", "", "", barMoneyDataset);
-		JFreeChart bar_amount = ChartFactory.createBarChart("", "", "", barAmountDataset);
-		tab.addTab("Money - Pie", new ChartPanel(pie_money));
-		tab.addTab("Money - Bar", new ChartPanel(bar_money));
-		tab.addTab("Amount - Pie", new ChartPanel(pie_amount));
-		tab.addTab("Amount - Bar", new ChartPanel(bar_amount));
-		pChart.add(tab);
-		pChart.updateUI();
-	}
+//	private void showPaywayChart(ArrayList<StatItem> items){
+//		//创建主题样式
+//        StandardChartTheme mChartTheme = new StandardChartTheme("CN");
+//        //设置标题字体
+//        mChartTheme.setExtraLargeFont(new Font("黑体", Font.BOLD, 20));
+//        //设置轴向字体
+//        mChartTheme.setLargeFont(new Font("宋体", Font.CENTER_BASELINE, 15));
+//        //设置图例字体
+//        mChartTheme.setRegularFont(new Font("宋体", Font.CENTER_BASELINE, 15));
+//        //应用主题样式
+//        ChartFactory.setChartTheme(mChartTheme);
+//        pChart.removeAll();
+//		JTabbedPane tab = new JTabbedPane();
+//
+//		DefaultPieDataset pieMoneyDataset = new DefaultPieDataset();
+//		DefaultPieDataset pieAmountDataset = new DefaultPieDataset();
+//		DefaultCategoryDataset barMoneyDataset = new DefaultCategoryDataset();
+//		DefaultCategoryDataset barAmountDataset = new DefaultCategoryDataset();
+//		for (int i = 0; i < items.size(); i++) {
+//			StatItem si = items.get(i);
+//			pieMoneyDataset.setValue(si.itemName, si.paidPrice);
+//			pieAmountDataset.setValue(si.itemName, si.soldAmount);
+//			barMoneyDataset.setValue(si.paidPrice, si.itemName, "");
+//			barAmountDataset.setValue(si.soldAmount, si.itemName, "");
+//		}
+//		JFreeChart pie_money = ChartFactory.createPieChart("", pieMoneyDataset,true, true, false);
+//		JFreeChart pie_amount = ChartFactory.createPieChart("", pieAmountDataset, true, true, false);
+//		JFreeChart bar_money = ChartFactory.createBarChart("", "", "", barMoneyDataset);
+//		JFreeChart bar_amount = ChartFactory.createBarChart("", "", "", barAmountDataset);
+//		tab.addTab("Money - Pie", new ChartPanel(pie_money));
+//		tab.addTab("Money - Bar", new ChartPanel(bar_money));
+//		tab.addTab("Amount - Pie", new ChartPanel(pie_amount));
+//		tab.addTab("Amount - Bar", new ChartPanel(bar_amount));
+//		pChart.add(tab);
+//		pChart.updateUI();
+//	}
 	
 	private void showSellChart(ArrayList<StatItem> items){
 		//创建主题样式  
@@ -416,46 +417,46 @@ public class StatisticsPanel extends JPanel implements ActionListener{
 		pChart.updateUI();
 	}
 	
-	private void showPeriodSellChart(ArrayList<StatItem> items){
-		//创建主题样式  
-        StandardChartTheme mChartTheme = new StandardChartTheme("CN");  
-        //设置标题字体  
-        mChartTheme.setExtraLargeFont(new Font("黑体", Font.BOLD, 20));  
-        //设置轴向字体  
-        mChartTheme.setLargeFont(new Font("宋体", Font.CENTER_BASELINE, 15));  
-        //设置图例字体  
-        mChartTheme.setRegularFont(new Font("宋体", Font.CENTER_BASELINE, 15));  
-        //应用主题样式  
-        ChartFactory.setChartTheme(mChartTheme);  
-        pChart.removeAll();
-		JTabbedPane tab = new JTabbedPane();
-		
-		DefaultPieDataset pieMoneyDataset = new DefaultPieDataset();
-		DefaultCategoryDataset barMoneyDataset = new DefaultCategoryDataset();
-		DefaultPieDataset pieAmountDataset = new DefaultPieDataset();
-		DefaultCategoryDataset barAmountDataset = new DefaultCategoryDataset();
-		for (int i = 0; i < items.size(); i++) {
-			StatItem si = items.get(i);
-			pieMoneyDataset.setValue(si.itemName, si.totalPrice);
-			barMoneyDataset.setValue(si.totalPrice, si.itemName, "");
-			pieAmountDataset.setValue(si.itemName, si.soldAmount);
-			barAmountDataset.setValue(si.soldAmount, si.itemName, "");
-		}
-		JFreeChart pie_money = ChartFactory.createPieChart("", pieMoneyDataset,true, true, false);
-		JFreeChart bar_money = ChartFactory.createBarChart("", "goods", "sold", barMoneyDataset);
-		JFreeChart pie_amount = ChartFactory.createPieChart("", pieAmountDataset,true, true, false);
-		JFreeChart bar_amount = ChartFactory.createBarChart("", "goods", "sold", barAmountDataset);
-		pie_money.removeLegend();
-		bar_money.removeLegend();
-		pie_amount.removeLegend();
-		bar_amount.removeLegend();
-		tab.addTab("Money - Pie", new ChartPanel(pie_money));
-		tab.addTab("Money - Bar", new ChartPanel(bar_money));
-		tab.addTab("Amount - Pie", new ChartPanel(pie_amount));
-		tab.addTab("Amount - Bar", new ChartPanel(bar_amount));
-		pChart.add(tab);
-		pChart.updateUI();
-	}
+//	private void showPeriodSellChart(ArrayList<StatItem> items){
+//		//创建主题样式
+//        StandardChartTheme mChartTheme = new StandardChartTheme("CN");
+//        //设置标题字体
+//        mChartTheme.setExtraLargeFont(new Font("黑体", Font.BOLD, 20));
+//        //设置轴向字体
+//        mChartTheme.setLargeFont(new Font("宋体", Font.CENTER_BASELINE, 15));
+//        //设置图例字体
+//        mChartTheme.setRegularFont(new Font("宋体", Font.CENTER_BASELINE, 15));
+//        //应用主题样式
+//        ChartFactory.setChartTheme(mChartTheme);
+//        pChart.removeAll();
+//		JTabbedPane tab = new JTabbedPane();
+//
+//		DefaultPieDataset pieMoneyDataset = new DefaultPieDataset();
+//		DefaultCategoryDataset barMoneyDataset = new DefaultCategoryDataset();
+//		DefaultPieDataset pieAmountDataset = new DefaultPieDataset();
+//		DefaultCategoryDataset barAmountDataset = new DefaultCategoryDataset();
+//		for (int i = 0; i < items.size(); i++) {
+//			StatItem si = items.get(i);
+//			pieMoneyDataset.setValue(si.itemName, si.totalPrice);
+//			barMoneyDataset.setValue(si.totalPrice, si.itemName, "");
+//			pieAmountDataset.setValue(si.itemName, si.soldAmount);
+//			barAmountDataset.setValue(si.soldAmount, si.itemName, "");
+//		}
+//		JFreeChart pie_money = ChartFactory.createPieChart("", pieMoneyDataset,true, true, false);
+//		JFreeChart bar_money = ChartFactory.createBarChart("", "goods", "sold", barMoneyDataset);
+//		JFreeChart pie_amount = ChartFactory.createPieChart("", pieAmountDataset,true, true, false);
+//		JFreeChart bar_amount = ChartFactory.createBarChart("", "goods", "sold", barAmountDataset);
+//		pie_money.removeLegend();
+//		bar_money.removeLegend();
+//		pie_amount.removeLegend();
+//		bar_amount.removeLegend();
+//		tab.addTab("Money - Pie", new ChartPanel(pie_money));
+//		tab.addTab("Money - Bar", new ChartPanel(bar_money));
+//		tab.addTab("Amount - Pie", new ChartPanel(pie_amount));
+//		tab.addTab("Amount - Bar", new ChartPanel(bar_amount));
+//		pChart.add(tab);
+//		pChart.updateUI();
+//	}
 	
 	private void doExport(){
 		if (tabReport.getRowCount() == 0)
@@ -497,8 +498,15 @@ public class StatisticsPanel extends JPanel implements ActionListener{
 					JOptionPane.showMessageDialog(mainFrame, e.getMessage());
 				}
 		}
-        
 	}
+
+	private void setTimePicker(int year, int month, int day, JDatePicker dp){
+		dp.getModel().setYear(year);
+		dp.getModel().setMonth(month);
+		dp.getModel().setDay(day);
+		dp.getModel().setSelected(true);
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnQuery){
@@ -506,80 +514,98 @@ public class StatisticsPanel extends JPanel implements ActionListener{
 		} else if (e.getSource() == btnExportExcel){
 			doExport();
 		} else if (e.getSource() == btnToday){
-			Calendar c = Calendar.getInstance();
-			dpStartDate.getModel().setYear(c.get(Calendar.YEAR));
-			dpStartDate.getModel().setMonth(c.get(Calendar.MONTH));
-			dpStartDate.getModel().setDay(c.get(Calendar.DAY_OF_MONTH));
-			dpStartDate.getModel().setSelected(true);
-			dpEndDate.getModel().setYear(c.get(Calendar.YEAR));
-			dpEndDate.getModel().setMonth(c.get(Calendar.MONTH));
-			dpEndDate.getModel().setDay(c.get(Calendar.DAY_OF_MONTH));
-			dpEndDate.getModel().setSelected(true);
+			/**
+			 * 如果统计时间从0点开始算, 则开始日期为今天; 否则开始日期为昨天
+			 */
+			if (startTime.equals("00:00:00")) {
+				Calendar c = Calendar.getInstance();
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpStartDate);
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpEndDate);
+			} else {
+				Calendar c = Calendar.getInstance();
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpEndDate);
+				c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) - 1);
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpStartDate);
+			}
 		} else if (e.getSource() == btnYesterday){
-			Calendar c = Calendar.getInstance();
-			c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) - 1);
-			dpStartDate.getModel().setYear(c.get(Calendar.YEAR));
-			dpStartDate.getModel().setMonth(c.get(Calendar.MONTH));
-			dpStartDate.getModel().setDay(c.get(Calendar.DAY_OF_MONTH));
-			dpStartDate.getModel().setSelected(true);
-			dpEndDate.getModel().setYear(c.get(Calendar.YEAR));
-			dpEndDate.getModel().setMonth(c.get(Calendar.MONTH));
-			dpEndDate.getModel().setDay(c.get(Calendar.DAY_OF_MONTH));
-			dpEndDate.getModel().setSelected(true);
+			if (startTime.equals("00:00:00")) {
+				Calendar c = Calendar.getInstance();
+				c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) - 1);
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpStartDate);
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpEndDate);
+			} else {
+				Calendar c = Calendar.getInstance();
+				c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) - 1);
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpEndDate);
+				c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) - 1);
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpStartDate);
+			}
 		} else if (e.getSource() == btnThisWeek){
-			Calendar c = Calendar.getInstance(Locale.CHINA);
-			c.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-			c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
-			dpStartDate.getModel().setYear(c.get(Calendar.YEAR));
-			dpStartDate.getModel().setMonth(c.get(Calendar.MONTH));
-			dpStartDate.getModel().setDay(c.get(Calendar.DAY_OF_MONTH));
-			dpStartDate.getModel().setSelected(true);
-			c.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-			c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
-			dpEndDate.getModel().setYear(c.get(Calendar.YEAR));
-			dpEndDate.getModel().setMonth(c.get(Calendar.MONTH));
-			dpEndDate.getModel().setDay(c.get(Calendar.DAY_OF_MONTH));
-			dpEndDate.getModel().setSelected(true);
+			if (startTime.equals("00:00:00")) {
+				Calendar c = Calendar.getInstance(Locale.CHINA);
+				c.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+				c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpStartDate);
+				c.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+				c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpEndDate);
+			} else {
+				Calendar c = Calendar.getInstance(Locale.CHINA);
+				c.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+				c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) - 1);
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpStartDate);
+				c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) + 7);
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpEndDate);
+			}
 		} else if (e.getSource() == btnLastWeek){
-			Calendar c = Calendar.getInstance(Locale.CHINA);
-			c.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-			c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) - 7);
-			dpStartDate.getModel().setYear(c.get(Calendar.YEAR));
-			dpStartDate.getModel().setMonth(c.get(Calendar.MONTH));
-			dpStartDate.getModel().setDay(c.get(Calendar.DAY_OF_MONTH));
-			dpStartDate.getModel().setSelected(true);
-			c.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-			c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
-			dpEndDate.getModel().setYear(c.get(Calendar.YEAR));
-			dpEndDate.getModel().setMonth(c.get(Calendar.MONTH));
-			dpEndDate.getModel().setDay(c.get(Calendar.DAY_OF_MONTH));
-			dpEndDate.getModel().setSelected(true);
+			if (startTime.equals("00:00:00")) {
+				Calendar c = Calendar.getInstance(Locale.CHINA);
+				c.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+				c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) - 7);
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpStartDate);
+				c.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+				c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH));
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpEndDate);
+			} else {
+				Calendar c = Calendar.getInstance(Locale.CHINA);
+				c.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+				c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) - 8);
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpStartDate);
+				c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) + 7);
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpEndDate);
+			}
 		} else if (e.getSource() == btnThisMonth){
-			Calendar c = Calendar.getInstance();
-			c.set(Calendar.DAY_OF_MONTH, 1);
-			dpStartDate.getModel().setYear(c.get(Calendar.YEAR));
-			dpStartDate.getModel().setMonth(c.get(Calendar.MONTH));
-			dpStartDate.getModel().setDay(c.get(Calendar.DAY_OF_MONTH));
-			dpStartDate.getModel().setSelected(true);
-			c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
-			dpEndDate.getModel().setYear(c.get(Calendar.YEAR));
-			dpEndDate.getModel().setMonth(c.get(Calendar.MONTH));
-			dpEndDate.getModel().setDay(c.get(Calendar.DAY_OF_MONTH));
-			dpEndDate.getModel().setSelected(true);
+			if (startTime.equals("00:00:00")) {
+				Calendar c = Calendar.getInstance();
+				c.set(Calendar.DAY_OF_MONTH, 1);
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpStartDate);
+				c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpEndDate);
+			} else {
+				Calendar c = Calendar.getInstance();
+				c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpEndDate);
+				c.set(Calendar.MONTH, c.get(Calendar.MONTH) - 1);
+				c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpStartDate);
+
+			}
 		} else if (e.getSource() == btnLastMonth){
-			Calendar c = Calendar.getInstance();
-			c.set(Calendar.MONTH, c.get(Calendar.MONTH) - 1);
-			c.set(Calendar.DAY_OF_MONTH, 1);
-//			dpStartDate.setDateTime(c);
-			dpStartDate.getModel().setYear(c.get(Calendar.YEAR));
-			dpStartDate.getModel().setMonth(c.get(Calendar.MONTH));
-			dpStartDate.getModel().setDay(c.get(Calendar.DAY_OF_MONTH));
-			dpStartDate.getModel().setSelected(true);
-			c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
-			dpEndDate.getModel().setYear(c.get(Calendar.YEAR));
-			dpEndDate.getModel().setMonth(c.get(Calendar.MONTH));
-			dpEndDate.getModel().setDay(c.get(Calendar.DAY_OF_MONTH));
-			dpEndDate.getModel().setSelected(true);
+			if (startTime.equals("00:00:00")) {
+				Calendar c = Calendar.getInstance();
+				c.set(Calendar.MONTH, c.get(Calendar.MONTH) - 1);
+				c.set(Calendar.DAY_OF_MONTH, 1);
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpStartDate);
+				c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpEndDate);
+			} else {
+				//从上个月1号, 到这个月的1号
+				Calendar c = Calendar.getInstance();
+				c.set(Calendar.DAY_OF_MONTH, 1);
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpEndDate);
+				c.set(Calendar.MONTH, c.get(Calendar.MONTH) - 1);
+				setTimePicker(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), dpStartDate);
+			}
 		} else if (e.getSource() == rbPayway){
 			((CardLayout)pDimensionParam.getLayout()).show(pDimensionParam, CARDLAYOUT_PAYWAY);
 		} else if (e.getSource() == rbSell){
