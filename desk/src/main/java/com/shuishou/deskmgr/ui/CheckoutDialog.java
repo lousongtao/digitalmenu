@@ -669,8 +669,10 @@ public class CheckoutDialog extends JDialog implements ActionListener, DocumentL
 			if (d.getAdditionalRequirements() != null)
 				requirement += d.getAdditionalRequirements();
 			//按重量卖的dish, 把重量加入requirement
-			if (dish.getPurchaseType() == ConstantValue.DISH_PURCHASETYPE_WEIGHT)
+			if (dish.getPurchaseType() == ConstantValue.DISH_PURCHASETYPE_WEIGHT) {
 				requirement += " " + d.getWeight();
+				mg.put("price", String.format(ConstantValue.FORMAT_DOUBLE3,d.getDishPrice()));//按重量卖的, 打印三位小数
+			}
 			if (dish.getPurchaseType() == ConstantValue.DISH_PURCHASETYPE_WEIGHT){
 				mg.put("totalPrice", String.format(ConstantValue.FORMAT_DOUBLE,d.getWeight() * d.getDishPrice() * d.getAmount()));
 			} else if (dish.getPurchaseType() == ConstantValue.DISH_PURCHASETYPE_UNIT){
