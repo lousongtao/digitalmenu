@@ -8,6 +8,8 @@ import com.shuishou.digitalmenu.indent.views.OperateIndentResult;
 import com.shuishou.digitalmenu.views.ObjectListResult;
 import com.shuishou.digitalmenu.views.ObjectResult;
 
+import java.util.List;
+
 public interface IIndentService {
 	MakeOrderResult saveIndent(String confirmCode, JSONArray jsonOrder, int deskid, int customerAmount, String comments) throws DataCheckException;
 	ObjectResult splitIndent(int userId, String confirmCode, JSONArray jsonOrder, int originIndentId, double paidPrice, 
@@ -29,4 +31,8 @@ public interface IIndentService {
 //	ObjectResult printIndentDetail(int userId, int indentDetailId);
 	ObjectResult clearDesk(int userId, int deskId);
 	ObjectResult changeDesks(int userId, int deskId1, int deskId2);
+
+    ObjectListResult queryWaitingDish();
+
+	ObjectResult waitingDishDone(List<Integer> indentDetailIds);
 }

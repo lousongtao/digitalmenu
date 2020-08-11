@@ -14,6 +14,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.shuishou.digitalmenu.indent.views.WaitingDish;
+import com.shuishou.digitalmenu.indent.views.WaitingIndentDetail;
 import org.hibernate.Hibernate;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -62,6 +64,7 @@ import com.shuishou.digitalmenu.views.ObjectResult;
 import com.shuishou.digitalmenu.views.Result;
 
 @Service
+@Transactional
 public class IndentService implements IIndentService {
 	
 	private final static Logger logger = LoggerFactory.getLogger(IndentService.class);
@@ -1414,6 +1417,44 @@ public class IndentService implements IIndentService {
 		long l2 = System.currentTimeMillis();
 		logger.debug((l2 - l1) + "ms to change desk for indent");
 		return new ObjectResult(Result.OK, true, deskinfos);
+	}
+
+	@Override
+	public ObjectListResult queryWaitingDish() {
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.HOUR_OF_DAY, 0);
+		c.set(Calendar.MINUTE, 0);
+		c.set(Calendar.SECOND, 0);
+		List<IndentDetail> indentDetails = indentDetailDA.getIndentDetailNotReadyByTime(c.getTime());
+
+		Map<String, WaitingDish> map = new HashMap<>();
+		for (IndentDetail detail : indentDetails) {
+			Dish dish = dishDA.getDishById(detail.getDishId());
+			Indent indent = detail.getIndent();
+			WaitingDish wd = map.get(dish.getFirstLanguageName());
+			if (wd == null){
+				wd = new WaitingDish();
+				wd.setDishName(dish.getFirstLanguageName());
+				map.put(wd.getDishName(), wd);
+			}
+			String require = detail.getAdditionalRequirements();
+			if (require != null)
+				require = require.replaceAll("\n", "");
+			wd.getIndentDetails().add(new WaitingIndentDetail(detail.getId(), indent.getDeskName(), detail.getAmount(), require));
+		}
+		List<WaitingDish> waitingDishes = new ArrayList<>();
+		waitingDishes.addAll(map.values());
+		return new ObjectListResult(null, true, waitingDishes);
+	}
+
+	@Override
+	public ObjectResult waitingDishDone(List<Integer> indentDetailIds) {
+		for (Integer id : indentDetailIds) {
+			IndentDetail detail = indentDetailDA.getIndentDetailById(id);
+			detail.setReady(true);
+			indentDetailDA.save(detail);
+		}
+		return new ObjectResult(null,true);
 	}
 
 	class IndentDetail_PrintStyle{

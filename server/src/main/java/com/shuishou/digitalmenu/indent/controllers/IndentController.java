@@ -19,6 +19,8 @@ import com.shuishou.digitalmenu.indent.views.OperateIndentResult;
 import com.shuishou.digitalmenu.views.ObjectListResult;
 import com.shuishou.digitalmenu.views.ObjectResult;
 
+import java.util.List;
+
 
 @Controller
 public class IndentController extends BaseController {
@@ -140,7 +142,17 @@ public class IndentController extends BaseController {
 		int limit = Integer.parseInt(limitStr);
 		return indentService.queryIndent(start, limit, starttime, endtime, status, deskname,orderby,orderbydesc);
 	}
-	
+
+	@RequestMapping(value="/indent/waitingdish", method = {RequestMethod.GET})
+	public @ResponseBody ObjectListResult queryWaitingDish() throws Exception{
+		return indentService.queryWaitingDish();
+	}
+
+	@RequestMapping(value="/indent/waitingdishdone", method = {RequestMethod.POST})
+	public @ResponseBody ObjectResult waitingDishDone(@RequestParam List<Integer> indentDetailIds) throws Exception{
+		return indentService.waitingDishDone(indentDetailIds);
+	}
+
 	/**
 	 * 
 	 * @param userId

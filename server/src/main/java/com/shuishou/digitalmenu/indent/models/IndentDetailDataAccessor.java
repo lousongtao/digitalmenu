@@ -1,6 +1,7 @@
 package com.shuishou.digitalmenu.indent.models;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -39,6 +40,12 @@ public class IndentDetailDataAccessor extends BaseDataAccessor implements IInden
 		return (List<IndentDetail>)sessionFactory.getCurrentSession().createQuery(hql)
 				.setCacheable(true)
 				.list();
+	}
+
+	@Override
+	public List<IndentDetail> getIndentDetailNotReadyByTime(Date time) {
+		String hql = "from IndentDetail where isReady = false and time > :time";
+		return sessionFactory.getCurrentSession().createQuery(hql).setTimestamp("time", time).list();
 	}
 
 	@Override

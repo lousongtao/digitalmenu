@@ -1,24 +1,27 @@
 package com.shuishou.digitalmenu.indent.models;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
 
 public interface IIndentDetailDataAccessor {
-	public Session getSession();
+	Session getSession();
 	
-	public Serializable save(IndentDetail indentDetail);
+	Serializable save(IndentDetail indentDetail);
 	
-	public void update(IndentDetail indentDetail);
+	void update(IndentDetail indentDetail);
 	
-	public void delete(IndentDetail indentDetail);
+	void delete(IndentDetail indentDetail);
 	
-	public IndentDetail getIndentDetailById(int id);
+	IndentDetail getIndentDetailById(int id);
 	
-	public IndentDetail getIndentDetailByParent(int indentId, int dishId);
+	IndentDetail getIndentDetailByParent(int indentId, int dishId);
 	
-	public List<IndentDetail> getIndentDetailByIndentId(int indentId);
+	List<IndentDetail> getIndentDetailByIndentId(int indentId);
 	
-	public List<IndentDetail> getAllIndentDetail();
+	List<IndentDetail> getAllIndentDetail();
+
+	List<IndentDetail> getIndentDetailNotReadyByTime(Date time);
 }

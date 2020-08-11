@@ -63,11 +63,19 @@ public class IndentDetail {
 	@Column
 	private Date time;
 	
-	
 	@Column
 	private String operator;//记录操作员名称, waiter的名称
-	
 
+	@Column
+	private boolean isReady; //菜是否已上桌
+
+	public boolean isReady() {
+		return isReady;
+	}
+
+	public void setReady(boolean ready) {
+		isReady = ready;
+	}
 //	public double getAdjustPrice() {
 //		return adjustPrice;
 //	}
