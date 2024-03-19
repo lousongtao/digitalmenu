@@ -136,6 +136,22 @@
 		"line": true,
 		"type": 0
 	},
+		{
+			"text": "会员充值-现金：{$memberDepositByCash}   ",
+			"size": 9,
+			"bold": false,
+			"align": 0,
+			"line": true,
+			"type": 0
+		},
+		{
+			"text": "会员充值-刷卡：{$memberDepositByBankcard}   ",
+			"size": 9,
+			"bold": false,
+			"align": 0,
+			"line": true,
+			"type": 0
+		},
 	{
 		"text": "-----------明  细------------",
 		"size": 9,

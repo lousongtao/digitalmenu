@@ -8,6 +8,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.shuishou.digitalmenu.member.models.IMemberBalanceDataAccessor;
+import com.shuishou.digitalmenu.member.models.MemberBalance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,6 +52,8 @@ public class ManagementService implements IManagementService{
 	
 	@Autowired
 	private IIndentDataAccessor indentDA;
+	@Autowired
+	private IMemberBalanceDataAccessor memberBalanceDA;
 	
 	@Autowired
 	private HttpServletRequest request;
@@ -212,6 +216,15 @@ public class ManagementService implements IManagementService{
 				}
 			}
 		}
+		//会员充值
+		List<MemberBalance> mbs = memberBalanceDA.getMemberBalanceByDate(startTime, endTime);
+		double memberDepositByCash = 0, memberDepositByBankcard = 0;
+		for (MemberBalance mb: mbs) {
+			if ("Cash".equals(mb.getType()))
+				memberDepositByCash += mb.getAmount();
+			else if ("Bank Transfer".equals(mb.getType()))
+				memberDepositByBankcard += mb.getAmount();
+		}
 		Map<String,String> keys = new HashMap<String, String>();
 		keys.put("userName", userName);
 		keys.put("startTime", ConstantValue.DFYMDHMS.format(startTime));
@@ -227,6 +240,8 @@ public class ManagementService implements IManagementService{
 		keys.put("paidPrice", String.format("%.2f",paidPrice));
 		keys.put("gst", String.format("%.2f",(double)(totalPrice/11)));
 		keys.put("printTime", ConstantValue.DFYMDHMS.format(new Date()));
+		keys.put("memberDepositByCash", String.format("%.2f", memberDepositByCash));
+		keys.put("memberDepositByBankcard",String.format("%.2f",memberDepositByBankcard));
 		for(String key : mapOtherPay.keySet()){
 			keys.put(key, String.format("%.2f",mapOtherPay.get(key)));
 		}

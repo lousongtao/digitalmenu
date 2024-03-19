@@ -434,7 +434,7 @@ public class MemberService implements IMemberService{
 		}
 		if (byDeposit){
 			if (member.getBalanceMoney() < consumptionPrice){
-				throw new DataCheckException("Meber's balance is not enought to pay");
+				throw new DataCheckException("Member's balance is not enough to pay");
 			}
 			if (needPassword){
 				if (memberPassword == null || !memberPassword.equals(member.getPassword())){
