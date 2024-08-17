@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.shuishou.digitalmenu.member.models.IMemberBalanceDataAccessor;
 import com.shuishou.digitalmenu.member.models.MemberBalance;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +38,7 @@ import com.shuishou.digitalmenu.views.Result;
 
 @Service
 public class ManagementService implements IManagementService{
+	private Logger logger = Logger.getLogger(ManagementService.class);
 
 	@Autowired
 	private IShiftWorkDataAccessor shiftWorkDA;
@@ -220,9 +222,9 @@ public class ManagementService implements IManagementService{
 		List<MemberBalance> mbs = memberBalanceDA.getMemberBalanceByDate(startTime, endTime);
 		double memberDepositByCash = 0, memberDepositByBankcard = 0;
 		for (MemberBalance mb: mbs) {
-			if ("Cash".equals(mb.getType()))
+			if ("Cash".equals(mb.getPayway()))
 				memberDepositByCash += mb.getAmount();
-			else if ("Bank Transfer".equals(mb.getType()))
+			else if ("Bank Transfer".equals(mb.getPayway()))
 				memberDepositByBankcard += mb.getAmount();
 		}
 		Map<String,String> keys = new HashMap<String, String>();
