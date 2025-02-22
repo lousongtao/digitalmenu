@@ -1,8 +1,5 @@
 package com.shuishou.deskmgr.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Dimension;
@@ -12,34 +9,16 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
+import java.text.NumberFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableModel;
 
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -47,14 +26,11 @@ import com.google.gson.reflect.TypeToken;
 import com.shuishou.deskmgr.ConstantValue;
 import com.shuishou.deskmgr.Messages;
 import com.shuishou.deskmgr.beans.Desk;
-import com.shuishou.deskmgr.beans.Dish;
 import com.shuishou.deskmgr.beans.HttpResult;
 import com.shuishou.deskmgr.beans.Indent;
 import com.shuishou.deskmgr.beans.IndentDetail;
 import com.shuishou.deskmgr.http.HttpUtil;
 import com.shuishou.deskmgr.ui.components.IconButton;
-import com.shuishou.deskmgr.ui.components.NumberInputDialog;
-import com.shuishou.deskmgr.ui.components.NumberTextField;
 
 public class ViewIndentDialog extends JDialog implements ActionListener{
 	private final Logger logger = Logger.getLogger(ViewIndentDialog.class.getName());
@@ -135,13 +111,14 @@ public class ViewIndentDialog extends JDialog implements ActionListener{
 		this.setSize(new Dimension(ConstantValue.WINDOW_WIDTH, 600));
 		this.setLocation((int)(mainFrame.getWidth() / 2 - this.getWidth() /2 + mainFrame.getLocation().getX()), 
 				(int)(mainFrame.getHeight() / 2 - this.getHeight() / 2 + mainFrame.getLocation().getY()));
-		
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	}
 		
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnClose){
 			ViewIndentDialog.this.setVisible(false);
+			ViewIndentDialog.this.dispose();
 		} else if (e.getSource() == btnRemove){
 			doRemoveDish();
 		} else if (e.getSource() == btnChangeAmount){
@@ -153,6 +130,7 @@ public class ViewIndentDialog extends JDialog implements ActionListener{
 		} else if (e.getSource() == btnCheckout){
 			CheckoutDialog dlg = new CheckoutDialog(mainFrame, Messages.getString("MainFrame.CheckoutTitle"), true, desk, indent); //$NON-NLS-1$
 			this.setVisible(false);
+			this.dispose();
 			dlg.setVisible(true);
 		}
 	}
@@ -328,7 +306,8 @@ public class ViewIndentDialog extends JDialog implements ActionListener{
 	class NewAmountInputDialog extends JDialog{
 		public int inputInteger;
 		public boolean isConfirm = false;
-		private NumberTextField txt;
+//		private NumberTextField txt;
+		private JFormattedTextField txt;
 		public NewAmountInputDialog(Dialog parent, String title, int oldAmount){
 			super(parent, title,true);
 			JButton btnConfirm = new JButton(Messages.getString("ConfirmDialog"));
@@ -342,8 +321,8 @@ public class ViewIndentDialog extends JDialog implements ActionListener{
 			btnClose.setPreferredSize(new Dimension(150, 50));
 			btnPlus.setPreferredSize(new Dimension(80, 80));
 			btnMinus.setPreferredSize(new Dimension(80,80));
-			
-			txt = new NumberTextField(this, false);
+
+			txt = new JFormattedTextField(NumberFormat.getNumberInstance());
 			tfOldAmount.setText(oldAmount + "");
 			txt.setText(oldAmount + "");
 			tfOldAmount.setEditable(false);
@@ -363,6 +342,7 @@ public class ViewIndentDialog extends JDialog implements ActionListener{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					setVisible(false);
+					dispose();
 				}
 			});
 			
@@ -375,6 +355,7 @@ public class ViewIndentDialog extends JDialog implements ActionListener{
 					isConfirm = true;
 					inputInteger = Integer.parseInt(txt.getText());
 					setVisible(false);
+					dispose();
 				}
 			});
 			btnPlus.addActionListener(new ActionListener(){

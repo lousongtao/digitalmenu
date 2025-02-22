@@ -96,6 +96,7 @@ public class SetFlavorDialog extends JDialog{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				SetFlavorDialog.this.setVisible(false);
+				SetFlavorDialog.this.dispose();
 			}});
 		btnAddOther.addActionListener(new ActionListener(){
 
@@ -135,6 +136,7 @@ public class SetFlavorDialog extends JDialog{
 		this.setSize(600, 400);
 		this.setLocation((int)(parent.getWidth() / 2 - this.getWidth() /2 + parent.getLocation().getX()), 
 				(int)(parent.getHeight() / 2 - this.getHeight() / 2 + parent.getLocation().getY()));
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	}
 	
 	

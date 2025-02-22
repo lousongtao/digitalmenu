@@ -128,6 +128,7 @@ public class RefundIndentDetailDialog extends JDialog implements ActionListener{
 		this.setSize(new Dimension(ConstantValue.WINDOW_WIDTH, 600));
 		this.setLocation((int)(mainFrame.getWidth() / 2 - this.getWidth() /2 + mainFrame.getLocation().getX()), 
 				(int)(mainFrame.getHeight() / 2 - this.getHeight() / 2 + mainFrame.getLocation().getY()));
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		
 	}
 		
@@ -135,6 +136,7 @@ public class RefundIndentDetailDialog extends JDialog implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnClose){
 			RefundIndentDetailDialog.this.setVisible(false);
+			RefundIndentDetailDialog.this.dispose();
 		} else if (e.getSource() == btnRefund){
 			doRefund();
 		} else if (e.getSource() == btnChooseAll){
@@ -204,6 +206,7 @@ public class RefundIndentDetailDialog extends JDialog implements ActionListener{
 		if (!existUnchecked){
 			doRefundIndent();
 			setVisible(false);
+			dispose();
 		} else {
 			doRemoveDish(indentDetailIdList);
 		}

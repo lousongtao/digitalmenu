@@ -9,7 +9,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,21 +33,16 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.shuishou.deskmgr.ConstantValue;
 import com.shuishou.deskmgr.Messages;
 import com.shuishou.deskmgr.beans.Category2;
-import com.shuishou.deskmgr.beans.Desk;
 import com.shuishou.deskmgr.beans.Dish;
 import com.shuishou.deskmgr.beans.HttpResult;
 import com.shuishou.deskmgr.http.HttpUtil;
 import com.shuishou.deskmgr.ui.components.JBlockedButton;
-import com.shuishou.deskmgr.ui.components.NumberInputDialog;
-import com.shuishou.deskmgr.ui.components.NumberTextField;
 
 public class MenuMgmtDialog extends JDialog {
 	private final Logger logger = Logger.getLogger(MenuMgmtDialog.class.getName());
@@ -115,6 +109,7 @@ public class MenuMgmtDialog extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				MenuMgmtDialog.this.setVisible(false);
+				MenuMgmtDialog.this.dispose();
 			}});
 		
 		btnMakeSoldout.addActionListener(new ActionListener(){
@@ -151,6 +146,7 @@ public class MenuMgmtDialog extends JDialog {
 		this.setSize(new Dimension(ConstantValue.WINDOW_WIDTH, ConstantValue.WINDOW_HEIGHT));
 		this.setLocation((int)(mainFrame.getWidth() / 2 - this.getWidth() /2 + mainFrame.getLocation().getX()), 
 				(int)(mainFrame.getHeight() / 2 - this.getHeight() / 2 + mainFrame.getLocation().getY()));
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	}
 	
 	private void initSoldoutList(){

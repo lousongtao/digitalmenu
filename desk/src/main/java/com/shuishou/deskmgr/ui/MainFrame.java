@@ -1122,6 +1122,7 @@ public class MainFrame extends JFrame implements ActionListener{
 			}
 		});
 		waitDlg.setVisible(false);
+		waitDlg.dispose();
 		f.setVisible(true);
 		f.startLogin(prop.getProperty("defaultuser.name"), prop.getProperty("defaultuser.password"));
 	}

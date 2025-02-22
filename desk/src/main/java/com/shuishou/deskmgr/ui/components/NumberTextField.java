@@ -16,6 +16,12 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JFormattedTextField;
 
+/**
+ * 20250217
+ * 这个类为了实现一个数字软键盘, 不得不注册AWTEventListener事件, 这个listener会长期注册在内存中, 会影响GC. 进而影响到所有引用该组件的dialog.
+ * 选择替换类DoubleTextField
+ */
+@Deprecated
 public class NumberTextField extends JFormattedTextField{
 
 	private NumberKeyboard keyboard;

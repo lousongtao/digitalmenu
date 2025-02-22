@@ -138,7 +138,7 @@ public class ViewHistoryIndentByDeskDialog extends JDialog implements ActionList
 		this.setSize(new Dimension(800, 600));
 		this.setLocation((int)(mainFrame.getWidth() / 2 - this.getWidth() /2 + mainFrame.getLocation().getX()), 
 				(int)(mainFrame.getHeight() / 2 - this.getHeight() / 2 + mainFrame.getLocation().getY()));
-		
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	}
 	
 	public void loadIndent(){
@@ -173,6 +173,7 @@ public class ViewHistoryIndentByDeskDialog extends JDialog implements ActionList
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnClose){
 			ViewHistoryIndentByDeskDialog.this.setVisible(false);
+			ViewHistoryIndentByDeskDialog.this.dispose();
 		} else if (e.getSource() == btnPrint){
 			doPrint();
 		} else if (e.getSource() == btnRefund){
@@ -218,6 +219,7 @@ public class ViewHistoryIndentByDeskDialog extends JDialog implements ActionList
 		if (result.data == null || result.data.isEmpty()){
 			JOptionPane.showMessageDialog(this, "Change payway successfully.");
 			this.setVisible(false);
+			this.dispose();
 			return;
 		}
 	}
@@ -240,6 +242,7 @@ public class ViewHistoryIndentByDeskDialog extends JDialog implements ActionList
 			return;
 		}
 		setVisible(false);
+		dispose();
 		RefundIndentDetailDialog refundDialog = new RefundIndentDetailDialog(mainFrame, desk, indent);
 		refundDialog.setVisible(true);
 	}

@@ -127,7 +127,9 @@ public class DishConfigDialog extends JDialog {
 				choosed.clear();
 				isCancel = true;
 				setVisible(false);
+				dispose();
 			}});
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	}
 	
 	public boolean isCancel(){
@@ -143,6 +145,7 @@ public class DishConfigDialog extends JDialog {
             choosed.addAll(cview.getChoosedData());
         }
 		setVisible(false);
+		dispose();
 	}
 	
 	public void onChooseChange(){

@@ -32,6 +32,7 @@ public class StartingWaitDialog extends JDialog {
 		this.setSize(new Dimension(480, 240));
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setLocation((int)(screenSize.width / 2 - this.getWidth() /2), (int)(screenSize.height / 2 - this.getHeight() / 2));
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	}
 	
 }

@@ -75,6 +75,7 @@ public class MemberListDialog extends JDialog{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				MemberListDialog.this.setVisible(false);
+				MemberListDialog.this.dispose();
 			}});
 		table.addMouseListener(new MouseAdapter(){
 			public void mouseClicked(MouseEvent e) {
@@ -83,6 +84,7 @@ public class MemberListDialog extends JDialog{
 				}
 			}
 		});
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	}
 	
 	private void doConfirm(){
@@ -92,6 +94,7 @@ public class MemberListDialog extends JDialog{
 		}
 		choosedMember = ((MemberTableModel)table.getModel()).getObjectAt(table.getSelectedRow());
 		this.setVisible(false);
+		this.dispose();
 	}
 	
 	public void doEnterClick(){

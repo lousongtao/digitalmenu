@@ -140,6 +140,7 @@ public class SplitIndentDialog extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				SplitIndentDialog.this.setVisible(false);
+				SplitIndentDialog.this.dispose();
 			}});
 		
 		btnMoveUp.addActionListener(new ActionListener(){
@@ -175,7 +176,7 @@ public class SplitIndentDialog extends JDialog {
 		this.setSize(new Dimension(ConstantValue.WINDOW_WIDTH, ConstantValue.WINDOW_HEIGHT));
 		this.setLocation((int)(mainFrame.getWidth() / 2 - this.getWidth() /2 + mainFrame.getLocation().getX()), 
 				(int)(mainFrame.getHeight() / 2 - this.getHeight() / 2 + mainFrame.getLocation().getY()));
-		
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	}
 	
 	private void doMoveUp(){
@@ -295,6 +296,7 @@ public class SplitIndentDialog extends JDialog {
 	 */
 	private void doPayRest(){
 		this.setVisible(false);
+		this.dispose();
 		CheckoutDialog dlg = new CheckoutDialog(mainFrame, Messages.getString("MainFrame.CheckoutTitle"), true, desk, indent); //$NON-NLS-1$
 		dlg.setVisible(true);
 	}

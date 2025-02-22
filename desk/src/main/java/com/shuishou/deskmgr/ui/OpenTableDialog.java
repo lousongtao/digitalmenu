@@ -6,7 +6,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -19,25 +18,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -57,7 +45,6 @@ import com.shuishou.deskmgr.beans.Indent;
 import com.shuishou.deskmgr.http.HttpUtil;
 import com.shuishou.deskmgr.ui.components.JBlockedButton;
 import com.shuishou.deskmgr.ui.components.NumberInputDialog;
-import com.shuishou.deskmgr.ui.components.NumberTextField;
 import com.shuishou.deskmgr.ui.dishconfig.DishConfigDialog;
 
 public class OpenTableDialog extends JDialog implements ActionListener{
@@ -74,7 +61,8 @@ public class OpenTableDialog extends JDialog implements ActionListener{
 	private ArrayList<Category2Label> listCategory2Label = new ArrayList<>();
 	
 	private JTextField tfSearchCode = new JTextField();
-	private NumberTextField tfCustomerAmount = new NumberTextField(this, false);
+//	private NumberTextField tfCustomerAmount = new NumberTextField(this, false);
+	private JFormattedTextField tfCustomerAmount = new JFormattedTextField(NumberFormat.getIntegerInstance());
 	private JButton btnRemove = new JButton(Messages.getString("OpenTableDialog.RemoveDish"));
 	private JButton btnClose = new JButton(Messages.getString("CloseDialog"));
 	private JButton btnFlavor = new JButton(Messages.getString("OpenTableDialog.SetFlavor"));
@@ -200,12 +188,14 @@ public class OpenTableDialog extends JDialog implements ActionListener{
 //		this.setSize(new Dimension(1280, 768));
 		this.setLocation((int)(mainFrame.getWidth() / 2 - this.getWidth() /2 + mainFrame.getLocation().getX()), 
 				(int)(mainFrame.getHeight() / 2 - this.getHeight() / 2 + mainFrame.getLocation().getY()));
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnClose){
 			OpenTableDialog.this.setVisible(false);
+			OpenTableDialog.this.dispose();
 		} else if (e.getSource() == btnTakeaway){
 			doSetTakeaway();
 		} else if (e.getSource() == btnConfirm){
@@ -213,11 +203,13 @@ public class OpenTableDialog extends JDialog implements ActionListener{
 				if (doMakeNewOrder()){
 					mainFrame.loadCurrentIndentInfo();
 					OpenTableDialog.this.setVisible(false);
+					OpenTableDialog.this.dispose();
 				}
 			} else if (status == ADDDISH){
 				if (doAddDish()){
 					mainFrame.loadCurrentIndentInfo();
 					OpenTableDialog.this.setVisible(false);
+					OpenTableDialog.this.dispose();
 				}
 			}
 		} else if (e.getSource() == btnRemove){
@@ -230,7 +222,7 @@ public class OpenTableDialog extends JDialog implements ActionListener{
 			doConfirmAndPay();
 		}
 	}
-	
+
 	private void doConfirmAndPay(){
 		boolean successOrder = false;
 		if (status == MAKENEWORDER){
@@ -240,6 +232,7 @@ public class OpenTableDialog extends JDialog implements ActionListener{
 		}
 		if (successOrder){
 			OpenTableDialog.this.setVisible(false);
+			OpenTableDialog.this.dispose();
 			Indent indent = mainFrame.loadIndentByDesk(desk.getName());
 			if (indent == null)
 				return;

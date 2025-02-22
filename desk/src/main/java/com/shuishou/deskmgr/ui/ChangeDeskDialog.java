@@ -75,6 +75,7 @@ public class ChangeDeskDialog extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				ChangeDeskDialog.this.setVisible(false);
+				ChangeDeskDialog.this.dispose();
 			}});
 		
 		btnConfirm.addActionListener(new ActionListener(){
@@ -86,6 +87,7 @@ public class ChangeDeskDialog extends JDialog {
 		this.setSize(new Dimension(900,400));
 		this.setLocation((int)(mainFrame.getWidth() / 2 - this.getWidth() /2 + mainFrame.getLocation().getX()), 
 				(int)(mainFrame.getHeight() / 2 - this.getHeight() / 2 + mainFrame.getLocation().getY()));
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	}
 	
 	private void doConfirm(){
@@ -123,6 +125,7 @@ public class ChangeDeskDialog extends JDialog {
 //		mainFrame.loadCurrentIndentInfo();
 		mergeResponse = response;
 		ChangeDeskDialog.this.setVisible(false);
+		ChangeDeskDialog.this.dispose();
 	}
 	
 	

@@ -66,6 +66,7 @@ public class MergeDeskDialog extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				MergeDeskDialog.this.setVisible(false);
+				MergeDeskDialog.this.dispose();
 			}});
 		
 		btnConfirm.addActionListener(new ActionListener(){
@@ -77,6 +78,7 @@ public class MergeDeskDialog extends JDialog {
 		this.setSize(new Dimension(900,400));
 		this.setLocation((int)(mainFrame.getWidth() / 2 - this.getWidth() /2 + mainFrame.getLocation().getX()), 
 				(int)(mainFrame.getHeight() / 2 - this.getHeight() / 2 + mainFrame.getLocation().getY()));
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	}
 	
 	public ArrayList<DeskCell> getSelectDesks(){
@@ -98,6 +100,7 @@ public class MergeDeskDialog extends JDialog {
 		}
 		isConfirm = true;
 		setVisible(false);
+		dispose();
 	}
 	
 	class DeskCell extends JPanel {

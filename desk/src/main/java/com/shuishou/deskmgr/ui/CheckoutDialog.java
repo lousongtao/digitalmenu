@@ -63,7 +63,6 @@ import com.shuishou.deskmgr.printertool.PrintJob;
 import com.shuishou.deskmgr.printertool.PrintQueue;
 import com.shuishou.deskmgr.ui.components.IconButton;
 import com.shuishou.deskmgr.ui.components.JBlockedButton;
-import com.shuishou.deskmgr.ui.components.NumberTextField;
 import com.shuishou.deskmgr.ui.components.VividRadioButton;
 import com.shuishou.deskmgr.ui.components.WaitDialog;
 
@@ -85,13 +84,13 @@ public class CheckoutDialog extends JDialog implements ActionListener, DocumentL
 	protected JButton btnQueryMember = new JButton("Query");
 	protected JPasswordField tfMemberPwd = new JPasswordField();
 	protected ArrayList<VividRadioButton> listRBOtherPayway = new ArrayList<>();
-	protected NumberTextField tfDiscountAmount = null;
+	protected JFormattedTextField tfDiscountAmount = new JFormattedTextField(NumberFormat.getNumberInstance());
 	protected JTextField tfMember = new JTextField();
 	protected JBlockedButton btnPay = new JBlockedButton(Messages.getString("CheckoutDialog.PayButton"), "/resource/checkout.png"); //$NON-NLS-1$
 	protected JButton btnClose = new JButton(Messages.getString("CloseDialog")); //$NON-NLS-1$
 	protected IconButton btnSplitIndent = new IconButton(Messages.getString("CheckoutDialog.SplitIndentButton"), "/resource/splitorder.png"); //$NON-NLS-1$
 	protected JButton btnCancelOrder = new JButton(Messages.getString("CheckoutDialog.CancelOrderButton")); //$NON-NLS-1$
-	protected NumberTextField numGetCash;
+	protected JFormattedTextField numGetCash;
 	protected JLabel lbChange;
 	protected double discountPrice = 0;
 	private ButtonGroup bgDiscountTemplate = new ButtonGroup();
@@ -111,9 +110,9 @@ public class CheckoutDialog extends JDialog implements ActionListener, DocumentL
 		JLabel lbDeskNo = new JLabel();
 		JLabel lbPrice = new JLabel();
 		
-		tfDiscountAmount = new NumberTextField(this, true);
+//		tfDiscountAmount = new NumberTextField(this, true);
 		
-		numGetCash = new NumberTextField(this, true);
+		numGetCash = new JFormattedTextField(NumberFormat.getNumberInstance());
 		JLabel lbGetCash = new JLabel(Messages.getString("CheckoutDialog.GetCash"));
 		lbChange = new JLabel();
 		
@@ -253,6 +252,7 @@ public class CheckoutDialog extends JDialog implements ActionListener, DocumentL
 		rbDiscountTemp.getRadioButton().addItemListener(this);
 		rbDiscountDirect.getRadioButton().addItemListener(this);
 		rbPayMember.getRadioButton().addItemListener(this);
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	}
 	
 	@Override
@@ -333,6 +333,7 @@ public class CheckoutDialog extends JDialog implements ActionListener, DocumentL
 		if (e.getSource() == btnClose){
 			isCancel = true;
 			setVisible(false);
+			dispose();
 		} else if (e.getSource() == btnCancelOrder){
 			doCancelOrder();
 		} else if (e.getSource() == btnPay){
@@ -341,6 +342,7 @@ public class CheckoutDialog extends JDialog implements ActionListener, DocumentL
 			doLookforMember();
 		} else if (e.getSource() == btnSplitIndent){
 			setVisible(false);
+			dispose();
 			doSplitIndent();
 		}
 	}
@@ -566,7 +568,7 @@ public class CheckoutDialog extends JDialog implements ActionListener, DocumentL
 			}
 		}
 		CheckoutDialog.this.setVisible(false);
-		
+		CheckoutDialog.this.dispose();
 		String change = "0";
 		if (rbPayCash.isSelected()){
 			double getcash = 0;
@@ -736,6 +738,7 @@ public class CheckoutDialog extends JDialog implements ActionListener, DocumentL
 		}
 		//clean table
 		CheckoutDialog.this.setVisible(false);
+		CheckoutDialog.this.dispose();
 		mainFrame.loadDesks();
 		mainFrame.loadCurrentIndentInfo();
 	}

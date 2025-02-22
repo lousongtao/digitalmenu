@@ -15,6 +15,10 @@ import javax.swing.JLabel;
 
 import com.shuishou.deskmgr.Messages;
 
+/**
+ * 弹出一个浮动的数字键盘. 这个类只提供给NumberTextField使用. 但是NumberTextField由于影响了GC. 已经废弃.
+ */
+@Deprecated
 public class NumberInputDialog extends JDialog{
 	public int inputInteger;
 	public double inputDouble; 

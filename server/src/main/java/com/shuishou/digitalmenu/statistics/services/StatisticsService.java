@@ -1,15 +1,10 @@
 package com.shuishou.digitalmenu.statistics.services;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
+import com.shuishou.digitalmenu.member.models.IMemberBalanceDataAccessor;
+import com.shuishou.digitalmenu.member.models.MemberBalance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +26,9 @@ import com.shuishou.digitalmenu.views.ObjectResult;
 import com.shuishou.digitalmenu.views.Result;
 import com.sun.istack.internal.NotNull;
 
+import static com.shuishou.digitalmenu.ConstantValue.INDENT_PAYWAY_BANKTRANSFER;
+import static com.shuishou.digitalmenu.ConstantValue.INDENT_PAYWAY_CASH;
+
 @Service
 public class StatisticsService implements IStatisticsService{
 	private final static Logger logger = LoggerFactory.getLogger(StatisticsService.class);
@@ -46,6 +44,9 @@ public class StatisticsService implements IStatisticsService{
 	
 	@Autowired
 	private IIndentDataAccessor indentDA;
+
+	@Autowired
+	private IMemberBalanceDataAccessor memberBalanceDataAccessor;
 	
 	private DecimalFormat doubleFormat = new DecimalFormat("0.00");
 	
@@ -69,6 +70,7 @@ public class StatisticsService implements IStatisticsService{
 		ObjectResult result = new ObjectResult(Result.OK, true);
 		if (dimension == ConstantValue.STATISTICS_DIMENSTION_PAYWAY){
 			ArrayList<StatItem> stats = statisticsPayway(indents);
+			stats.addAll(statsticsMemberRecharge(startDate, endDate));//20240818 把会员充值加入这个统计里面
 			result.data = stats;
 			l3 = System.currentTimeMillis();
 			logger.debug("do statistics by payway use time  " + (l3-l2));
@@ -108,7 +110,9 @@ public class StatisticsService implements IStatisticsService{
 		}
 		return result;
 	}
-	
+
+
+
 	@Transactional
 	public void initDishMap(){
 		List<Dish> dishes = dishDA.getAllDish();
@@ -355,7 +359,26 @@ public class StatisticsService implements IStatisticsService{
 			ss.totalPrice += detail.getDishPrice() * detail.getWeight();
 		}
 	}
-	
+
+	private Collection<? extends StatItem> statsticsMemberRecharge(Date startDate, Date endDate) {
+		StatItem siCash = new StatItem("MemberRecharge-Cash");
+		StatItem siTransfer = new StatItem("MemberRecharge-Transfer");
+		List<MemberBalance> mbs = memberBalanceDataAccessor.getMemberBalanceByDate(startDate, endDate);
+		for(MemberBalance mb: mbs){
+			if ("Cash".equals(mb.getPayway())) {
+				siCash.paidPrice += mb.getAmount();
+				siCash.soldAmount++;
+			} else if (INDENT_PAYWAY_BANKTRANSFER.equals(mb.getPayway())){
+				siTransfer.paidPrice += mb.getAmount();
+				siTransfer.soldAmount++;
+			}
+		}
+		ArrayList<StatItem> list = new ArrayList<>();
+		list.add(siCash);
+		list.add(siTransfer);
+		return list;
+	}
+
 	@Transactional
 	public ArrayList<StatItem> statisticsPayway(List<Indent> indents){
 		ArrayList<StatItem> stats = new ArrayList<>();
@@ -377,6 +400,8 @@ public class StatisticsService implements IStatisticsService{
 		while(its.hasNext()){
 			stats.add(its.next());
 		}
+		// 会员充值有现金和转账两种, 一同记录在这个地方
+
 		return stats;
 	}
 }
