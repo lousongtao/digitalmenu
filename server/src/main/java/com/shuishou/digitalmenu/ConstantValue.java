@@ -77,6 +77,7 @@ public class ConstantValue {
 	public static final String INDENT_PAYWAY_CASH = "cash";//现金
 	public static final String INDENT_PAYWAY_BANKCARD = "bankcard";//刷卡
 	public static final String INDENT_PAYWAY_MEMBER = "member";//会员
+	public static final String INDENT_PAYWAY_BANKTRANSFER = "banktransfer";
 	
 //	public static final byte INDENTDETAIL_OPERATIONTYPE_ADD = 1;//deprecated
 	public static final byte INDENTDETAIL_OPERATIONTYPE_DELETE = 2;
